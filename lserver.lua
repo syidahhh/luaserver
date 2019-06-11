@@ -1,4 +1,4 @@
-#!/usr/bin/lua50
+#!/usr/bin/lua51
 
 -- Load the library
 socket = require( "libhttpd" );
