@@ -1,31 +1,31 @@
-require("socket")
- 
-function checkOn (client)
-    local line, err = client:receive()
-    if line then
-        print(tostring(client) .. " said " .. line)
-        client:send(line .. "\n")
-    end
-    if err and err ~= "timeout" then
-        print(tostring(client) .. " " .. err)
-        client:close()
-        return err
-    end
-    return nil
-end
- 
-local delay, clients, newClient = 10^-6, {}
-local server = assert(socket.bind("*", 12321))
-server:settimeout(delay)
-print("Server started")
-while 1 do
-    repeat
-        newClient = server:accept()
-        for k, v in pairs(clients) do
-            if checkOn(v) then table.remove(clients, k) end
-        end
-    until newClient
-    newClient:settimeout(delay)
-    print(tostring(newClient) .. " connected")
-    table.insert(clients, newClient)
+#!/usr/bin/lua51
+
+-- Load the library
+socket = require( "libhttpd" );
+
+-- Start listening upon a socket
+listener = socket.bind( 8888 );
+
+-- Show instructions!
+print( "Echo server running on port 8888" );
+
+-- Loop waiting for connections
+while true do
+
+   -- Accept a new connection.
+   client,ip = socket.accept( listener );
+
+   -- Read from the client.
+   length, data = socket.read(client);
+   
+   while( length > 0 ) do 
+       -- Echo data back to client.
+       socket.write( client, data );
+
+       length, data = socket.read( client );
+   end
+
+   -- Now close the socket.
+   socket.close( client );
+
 end
